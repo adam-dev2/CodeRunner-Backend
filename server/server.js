@@ -29,9 +29,8 @@ io.on('connection', (socket) => {
   socket.on('runCode', ({ code }) => {
     const sessionId = Date.now().toString();
     const filePath = path.join(tempDir, `${sessionId}.cpp`);
-    const execPath = path.join(tempDir, `${sessionId}.out`); // `.exe` for Windows
+    const execPath = path.join(tempDir, `${sessionId}.out`); 
 
-    // Write C++ code to temp file
     try {
       fs.writeFileSync(filePath, code);
     } catch (err) {
@@ -39,7 +38,6 @@ io.on('connection', (socket) => {
       return;
     }
 
-    // Kill any previously running process
     if (currentProcess && !currentProcess.killed) {
       currentProcess.kill();
     }
@@ -69,7 +67,7 @@ io.on('connection', (socket) => {
         const output = data.toString();
         socket.emit('output', output);
 
-        // Check if input is likely needed
+        
         if (needsInput(output)) {
           socket.emit('inputRequest');
         }
@@ -106,12 +104,12 @@ io.on('connection', (socket) => {
   });
 });
 
-// Helper function to detect if user input is likely required
+
 function needsInput(output) {
   return /enter|input|:|>|\?\s*$/i.test(output.trim());
 }
 
-// Delete temporary files
+
 function cleanupFiles(file, exec) {
   try {
     if (fs.existsSync(file)) fs.unlinkSync(file);
